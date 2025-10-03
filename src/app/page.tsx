@@ -42,7 +42,7 @@ export default function Home() {
         <Button onClick={transitionStartPage} variant="secondary" size="icon" className={cn(!startPage ? "absolute top-4 left-4 size-8" : "hidden")}>
           <ChevronLeftIcon />
         </Button>
-        <div style={{display: startPage ? 'block' : 'none'}}>
+        <div className={cn(startPage ? "" : "hidden")}>
           <CardHeader>
             <CardTitle className="flex justify-center items-center">ようこそ</CardTitle>
           </CardHeader>
