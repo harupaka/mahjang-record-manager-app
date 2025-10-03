@@ -25,8 +25,8 @@ export default function SignIn() {
           <Input />
         </div>
         <div>
-            <Label className="mt-4 mb-2">パスワード</Label>
-            <Input type="password" />
+          <Label className="mt-4 mb-2">パスワード</Label>
+          <Input type="password" />
         </div>
       </CardContent>
       <CardFooter>

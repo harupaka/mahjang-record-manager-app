@@ -5,16 +5,15 @@ import { ChevronLeftIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import SignIn from "@/components/home/SignIn"
-import SignUp from "@/components/home/SignUp"
+import SignIn from "@/components/home/sign-in"
+import SignUp from "@/components/home/sign-up"
+import { cn } from "@/lib/utils"
 
 export default function Home() {
   const [startPage, setStartPage] = useState(true)
@@ -36,10 +35,11 @@ export default function Home() {
     setSignUpPage(false)
     setSignInPage(false)
   }
+
   return (
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-full max-w-sm relative">
-        <Button style={{display: !startPage ? '' : 'none'}} onClick={transitionStartPage} variant="secondary" size="icon" className="absolute top-4 left-4 size-8">
+        <Button onClick={transitionStartPage} variant="secondary" size="icon" className={cn(!startPage ? "absolute top-4 left-4 size-8" : "hidden")}>
           <ChevronLeftIcon />
         </Button>
         <div style={{display: startPage ? 'block' : 'none'}}>
@@ -63,10 +63,10 @@ export default function Home() {
           <CardFooter className="flex-col gap-2">
           </CardFooter>
         </div>
-        <div style={{display: signInPage ? 'block' : 'none'}}>
+        <div className={cn(signInPage ? "" : "hidden")}>
           <SignIn />
         </div>
-        <div style={{display: signUpPage ? 'block' : 'none'}}>
+        <div className={cn(signUpPage ? "" : "hidden")}>
           <SignUp />
         </div>
       </Card>
