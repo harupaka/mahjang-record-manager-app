@@ -1,7 +1,9 @@
-"use client"
+import MyPage from "@/components/mypage/mypage"
 
-export default function MyPage() {
+export default function Page() {
   return(
-    <>Hello! welcome to mypage!</>
+    <div>
+      <MyPage />
+    </div>
   )
 }
