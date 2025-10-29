@@ -51,13 +51,13 @@ export default function SignUp() {
 
   const handleSignUp = async () => {
     try {
-      const data = await signUpUser({email, password})
+      await signUpUser({email, password})
 
       await new Promise(resolve => setTimeout(resolve, 100))
 
       router.push('/mypage/initialization')
 
-      return data
+      return
     } catch(error){
       const err = error as Error
       console.error('Sign Up error:', err.message)

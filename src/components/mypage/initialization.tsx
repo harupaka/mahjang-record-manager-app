@@ -16,12 +16,12 @@ import { useRouter } from "next/navigation"
 import { User } from '@supabase/supabase-js'
 import { fetchUser } from "@/lib/api/auth"
 import { fetchProfile, searchSameId, registerProfile } from "@/lib/api/profile"
-import { initializingForm } from "@/lib/types"
+import { InitializingForm } from "@/lib/types"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from "zod"
 
-type FormData = z.infer<typeof initializingForm>
+type FormData = z.infer<typeof InitializingForm>
 
 export default function Initialization() {
   const {
@@ -31,7 +31,7 @@ export default function Initialization() {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: zodResolver(initializingForm)
+    resolver: zodResolver(InitializingForm)
   })
   const [clientUser, setClientUser] = useState<User | null>(null)
   const [originalId, setOriginalId] = useState<string>("")

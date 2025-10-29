@@ -10,7 +10,7 @@ export interface SignInParams {
   password: string
 }
 
-export const initializingForm = z.object({
+export const InitializingForm = z.object({
   name: z.string()
           .min(1, "入力してください")
           .max(20, "20字以内で入力してください"),
