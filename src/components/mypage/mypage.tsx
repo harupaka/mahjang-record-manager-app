@@ -5,8 +5,8 @@ import { Mail, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import { Profile } from '@/lib/types'
 import { User } from '@supabase/supabase-js'
-import { fetchUser } from "@/lib/api/auth";
-import { fetchProfile } from "@/lib/api/profile";
+// import { fetchUser } from "@/lib/api/auth";
+import { fetchProfile } from "@/lib/api/client/profile";
 
 export default function MyPage() {
   const [clientUser, setClientUser] = useState<User | null>(null)

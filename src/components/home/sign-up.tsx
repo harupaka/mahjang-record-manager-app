@@ -14,7 +14,7 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { ChevronLeftIcon } from "lucide-react"
-import { signUpUser } from "@/lib/api/auth"
+import { signUpUser } from "@/lib/api/client/auth"
 
 export default function SignUp() {
   const [email, setEmail] = useState<string>('')

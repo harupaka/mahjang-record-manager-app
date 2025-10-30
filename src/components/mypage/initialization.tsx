@@ -14,16 +14,23 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { User } from '@supabase/supabase-js'
-import { fetchUser } from "@/lib/api/auth"
-import { fetchProfile, searchSameId, registerProfile } from "@/lib/api/profile"
-import { initializingForm } from "@/lib/types"
+import { searchSameId, registerProfile } from "@/lib/api/client/profile"
+import { InitializingForm } from "@/lib/types"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from "zod"
+import { Profile } from "@/lib/types"
 
-type FormData = z.infer<typeof initializingForm>
+type FormData = z.infer<typeof InitializingForm>
 
-export default function Initialization() {
+type ProfileProps = {
+  userInfo: {
+    user: User
+    profile: Profile
+  }
+}
+
+export default function Initialization({ userInfo }: ProfileProps) {
   const {
     register,
     reset,
@@ -31,7 +38,7 @@ export default function Initialization() {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: zodResolver(initializingForm)
+    resolver: zodResolver(InitializingForm)
   })
   const [clientUser, setClientUser] = useState<User | null>(null)
   const [originalId, setOriginalId] = useState<string>("")
@@ -39,32 +46,12 @@ export default function Initialization() {
   const router = useRouter()
 
   useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const user = await fetchUser()
-        if(!user){
-          console.error('Not Login')
-          return
-        }
-        setClientUser(user)
-
-        const data = await fetchProfile(user);
-
-        const currentId = data['public-id'] || ""
-        setOriginalId(currentId)
-        
-        reset({
-          name: data['name'],
-          id: data['public-id']
-        })
-      } catch (error) {
-        const err = error as Error
-        console.error('Get profile error:', err.message)
-        return null
-      }
-    }
-
-    getProfile()
+    reset({
+      name: userInfo.profile['name'],
+      id: userInfo.profile['public-id']
+    })
+    setClientUser(userInfo.user)
+    setOriginalId(userInfo.profile['public-id'])
   }, [])
 
   const onSubmit = async (data: FormData) => {
