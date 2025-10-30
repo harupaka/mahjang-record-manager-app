@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { supabase } from "@/lib/supabase"
 import { Mail, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import { Profile } from '@/lib/types'
