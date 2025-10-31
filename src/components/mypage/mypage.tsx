@@ -1,44 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Mail, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import { Profile } from '@/lib/types'
-import { User } from '@supabase/supabase-js'
-// import { fetchUser } from "@/lib/api/auth";
-import { fetchProfile } from "@/lib/api/client/profile";
 
-export default function MyPage() {
-  const [clientUser, setClientUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
+type ProfileProps = {
+  profile: Profile
+}
+
+export default function MyPage({ profile }: ProfileProps) {
+  const profileData = profile
   
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const user = await fetchUser()
-        if(!user){
-          console.error('Not Login')
-          return
-        }
-        setClientUser(user)
-    
-        const data = await fetchProfile(user);
-    
-        setProfile(data)
-      } catch (error) {
-        const err = error as Error
-        console.error('Get profile error:', err.message)
-        return null
-      }
-    }
-
-    getProfile()
-  }, [])
-
   const handleCopyId = async() => {
     try {
-      if(profile?.["public-id"]){
-        await navigator.clipboard.writeText(profile["public-id"])
+      if(profileData["public-id"]){
+        await navigator.clipboard.writeText(profileData["public-id"])
       }
     } catch(error){
       const err = error as Error
@@ -47,7 +23,7 @@ export default function MyPage() {
   }
 
   return(
-    <>
+    <div>
       <header className="flex justify-between items-center">
         <div className="text-4xl font-bold">
           マイページ
@@ -60,10 +36,10 @@ export default function MyPage() {
       <div>
         <div>
           <div className="text-3xl font-bold">
-            {profile?.name}
+            {profileData['name']}
           </div>
           <div className="text-2xl text-gray-500">
-            ID:{profile?.["public-id"]}
+            ID:{profileData["public-id"]}
             <Button size="sm" variant="outline" onClick={handleCopyId}><Copy /></Button>
           </div>
         </div>
@@ -77,6 +53,6 @@ export default function MyPage() {
           直近の対戦
         </div>
       </div>
-    </>
+    </div>
   )
 }

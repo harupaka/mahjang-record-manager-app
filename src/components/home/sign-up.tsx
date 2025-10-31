@@ -10,63 +10,42 @@ import {
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
-import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { ChevronLeftIcon } from "lucide-react"
 import { signUpUser } from "@/lib/api/client/auth"
+import { useForm } from 'react-hook-form'
+import { SignUpForm } from "@/lib/types"
+import z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+type FormData = z.infer<typeof SignUpForm>
 
 export default function SignUp() {
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [checkEmail, setCheckEmail] = useState<boolean>(false)
-  const [checkPw, setCheckPw] = useState<boolean>(false)
+  const {
+    register,
+    reset,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: zodResolver(SignUpForm)
+  })
 
   const router = useRouter()
 
-  const checkValidEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = e.target.value
-    setEmail(newEmail)
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if(newEmail !== '' && emailPattern.test(newEmail)){
-      setCheckEmail(true)
-    }
-    else{
-      setCheckEmail(false)
-    }
-  }
-
-  const checkValidPw = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPassword = e.target.value
-    setPassword(newPassword)
-
-    if(newPassword.length >= 8 && newPassword.length <= 20){
-      setCheckPw(true)
-    }
-    else{
-      setCheckPw(false)
-    }
-  }
-
-  const handleSignUp = async () => {
-    try {
-      const data = await signUpUser({email, password})
-
-      await new Promise(resolve => setTimeout(resolve, 100))
+  const onSubmit = async (data: FormData) => {
+    try{
+      await signUpUser(data)
 
       router.push('/mypage/initialization')
-
-      return data
     } catch(error){
       const err = error as Error
-      console.error('Sign Up error:', err.message)
-      return null
+      console.error('SignUp Error:', err.message)
     }
   }
 
   return(
-    <div>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Button variant="secondary" size="icon" className="absolute top-4 left-4 size-8" onClick={() => router.push('/')}>
         <ChevronLeftIcon />
       </Button>
@@ -78,19 +57,23 @@ export default function SignUp() {
       <CardContent>
         <div>
           <Label className="mt-4 mb-2">メールアドレス</Label>
-          <Input onChange={checkValidEmail} className={cn(email === '' ? 'border-gray-300 bg-white' : checkEmail ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50')}/>
+          <Input {...register('email')}/>
+          <CardDescription className="mb-2">
+            {errors.email && <div className='text-red-500'>{errors.email.message}</div>}
+          </CardDescription>
         </div>
         <div>
           <Label className="mt-4 mb-2">パスワード</Label>
-          <Input type="password" onChange={checkValidPw} className={cn(password === '' ? 'border-gray-300 bg-white' : checkPw ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50')}/>
+          <Input type="password" {...register('password')}/>
           <CardDescription className="mb-2">
+            {errors.password && <div className='text-red-500'>{errors.password.message}</div>}
             ※8字以上20字以下
           </CardDescription>
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full mt-6 mb-2" onClick={handleSignUp} disabled={!checkEmail || !checkPw}>新規登録</Button>
+        <Button type="submit" className="w-full mt-6 mb-2">新規登録</Button>
       </CardFooter>
-    </div>
+    </form>
   )
 }
