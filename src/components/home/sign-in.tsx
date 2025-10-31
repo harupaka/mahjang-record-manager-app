@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { ChevronLeftIcon } from "lucide-react"
 import { signInUser } from "@/lib/api/client/auth"
+import Link from 'next/link'
 
 export default function SignIn() {
   const [email, setEmail] = useState<string>('')
@@ -42,8 +43,10 @@ export default function SignIn() {
 
   return(
     <div>
-      <Button variant="secondary" size="icon" className="absolute top-4 left-4 size-8" onClick={() => router.push('/')}>
-        <ChevronLeftIcon />
+      <Button variant="secondary" size="icon" className="absolute top-4 left-4 size-8" asChild>
+        <Link href='/'>
+          <ChevronLeftIcon />
+        </Link>
       </Button>
       <CardHeader>
         <CardTitle className="flex justify-center items-center">
