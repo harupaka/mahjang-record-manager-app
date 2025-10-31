@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function StartPage() {
   const router = useRouter()
@@ -26,14 +27,18 @@ export default function StartPage() {
             <CardDescription className="flex justify-center mt-4 mb-2">
               アカウントをお持ちでない方はこちら
             </CardDescription>
-            <Button className="w-full" onClick={() => router.push('/sign-up')}>
-              新規登録
+            <Button className="w-full" asChild>
+              <Link href='/sign-up'>
+                新規登録
+              </Link>
             </Button>
             <CardDescription className="flex justify-center mt-4 mb-2">
               既にアカウントをお持ちの方はこちら
             </CardDescription>
-            <Button className="w-full" onClick={() => router.push('/sign-in')}>
-              ログイン
+            <Button className="w-full" asChild>
+              <Link href='sign-in'>
+                ログイン
+              </Link>
             </Button>
           </CardContent>
           <CardFooter className="flex-col gap-2">
