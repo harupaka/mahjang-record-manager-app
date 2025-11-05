@@ -1,41 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Mail, Copy } from 'lucide-react';
+import { Mail, Copy } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Profile } from '@/lib/types'
-// import { fetchUser } from "@/lib/api/auth";
-import { fetchProfile } from "@/lib/api/client/profile";
+import { ProfileProps } from '@/lib/types'
 
-export default function MyPage() {
-  const [profile, setProfile] = useState<Profile | null>(null)
-  
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const user = await fetchUser()
-        if(!user){
-          console.error('Not Login')
-          return
-        }
-    
-        const data = await fetchProfile(user);
-    
-        setProfile(data)
-      } catch (error) {
-        const err = error as Error
-        console.error('Get profile error:', err.message)
-        return null
-      }
-    }
-
-    getProfile()
-  }, [])
-
+export default function MyPage({ userInfo }: ProfileProps) {
   const handleCopyId = async() => {
     try {
-      if(profile?.["public-id"]){
-        await navigator.clipboard.writeText(profile["public-id"])
+      if(userInfo.profile?.["public-id"]){
+        await navigator.clipboard.writeText(userInfo.profile["public-id"])
       }
     } catch(error){
       const err = error as Error
@@ -57,10 +30,10 @@ export default function MyPage() {
       <div>
         <div>
           <div className="text-3xl font-bold">
-            {profile?.name}
+            {userInfo.profile?.name}
           </div>
           <div className="text-2xl text-gray-500">
-            ID:{profile?.["public-id"]}
+            ID:{userInfo.profile?.["public-id"]}
             <Button size="sm" variant="outline" onClick={handleCopyId}><Copy /></Button>
           </div>
         </div>

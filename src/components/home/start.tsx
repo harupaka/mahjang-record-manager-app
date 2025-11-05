@@ -10,12 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function StartPage() {
-  const router = useRouter()
-
   return (
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-full max-w-sm relative">

@@ -19,16 +19,9 @@ import { InitializingForm } from "@/lib/types"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from "zod"
-import { Profile } from "@/lib/types"
+import { ProfileProps } from '@/lib/types'
 
 type FormData = z.infer<typeof InitializingForm>
-
-type ProfileProps = {
-  userInfo: {
-    user: User
-    profile: Profile
-  }
-}
 
 export default function Initialization({ userInfo }: ProfileProps) {
   const {
@@ -52,7 +45,7 @@ export default function Initialization({ userInfo }: ProfileProps) {
     })
     setClientUser(userInfo.user)
     setOriginalId(userInfo.profile['public-id'])
-  }, [])
+  }, [reset, userInfo.profile, userInfo.user])
 
   const onSubmit = async (data: FormData) => {
     if (data.id !== originalId) {

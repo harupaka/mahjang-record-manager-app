@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { User } from '@supabase/supabase-js'
 
 export interface SignUpParams {
   email: string
@@ -25,4 +26,11 @@ export interface Profile {
   'public-id': string
   name: string
   'total-score': number
+}
+
+export interface ProfileProps {
+  userInfo: {
+    user: User
+    profile: Profile
+  }
 }
