@@ -1,7 +1,16 @@
-"use client"
+import MyPage from "@/components/mypage/mypage"
+import { getProfile } from "@/lib/queries"
 
-export default function MyPage() {
+export default async function Page() {
+  const userInfo = await getProfile()
+
+  if (!userInfo) {
+    return <div>ログインしてください</div>
+  }
+
   return(
-    <>Hello! welcome to mypage!</>
+    <div>
+      <MyPage userInfo={userInfo}/>
+    </div>
   )
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import {
   CardContent,
@@ -9,9 +11,11 @@ import {
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { supabase } from "@/lib/supabase"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { ChevronLeftIcon } from "lucide-react"
+import { signUpUser } from "@/lib/api/client/auth"
+import Link from 'next/link'
 
 export default function SignUp() {
   const [email, setEmail] = useState<string>('')
@@ -48,9 +52,7 @@ export default function SignUp() {
 
   const handleSignUp = async () => {
     try {
-      const {data, error} = await supabase.auth.signUp({email, password})
-      
-      if(error) throw error
+      const data = await signUpUser({email, password})
 
       await new Promise(resolve => setTimeout(resolve, 100))
 
@@ -65,7 +67,12 @@ export default function SignUp() {
   }
 
   return(
-    <>
+    <div>
+      <Button variant="secondary" size="icon" className="absolute top-4 left-4 size-8" asChild>
+        <Link href='/'>
+          <ChevronLeftIcon />
+        </Link>
+      </Button>
       <CardHeader>
         <CardTitle className="flex justify-center items-center">
           新規登録をする
@@ -87,6 +94,6 @@ export default function SignUp() {
       <CardFooter>
         <Button className="w-full mt-6 mb-2" onClick={handleSignUp} disabled={!checkEmail || !checkPw}>新規登録</Button>
       </CardFooter>
-    </>
+    </div>
   )
 }

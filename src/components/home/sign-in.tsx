@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import {
   CardContent,
@@ -9,9 +11,11 @@ import {
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { supabase } from "@/lib/supabase"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { ChevronLeftIcon } from "lucide-react"
+import { signInUser } from "@/lib/api/client/auth"
+import Link from 'next/link'
 
 export default function SignIn() {
   const [email, setEmail] = useState<string>('')
@@ -22,9 +26,7 @@ export default function SignIn() {
 
   const handleSignIn = async () => {
     try{
-      const { data, error } = await supabase.auth.signInWithPassword({email, password})
-      
-      if(error) throw error
+      const data = await signInUser({email, password})
 
       router.push('/mypage')
 
@@ -40,7 +42,12 @@ export default function SignIn() {
   }
 
   return(
-    <>
+    <div>
+      <Button variant="secondary" size="icon" className="absolute top-4 left-4 size-8" asChild>
+        <Link href='/'>
+          <ChevronLeftIcon />
+        </Link>
+      </Button>
       <CardHeader>
         <CardTitle className="flex justify-center items-center">
           ログインする
@@ -62,6 +69,6 @@ export default function SignIn() {
       <CardFooter>
         <Button className="w-full mt-6 mb-2" onClick={handleSignIn}>ログイン</Button>
       </CardFooter>
-    </>
+    </div>
   )
 }
