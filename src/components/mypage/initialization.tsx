@@ -50,11 +50,13 @@ export default function Initialization({ userInfo }: ProfileProps) {
   const onSubmit = async (data: FormData) => {
     if (data.id !== originalId) {
       const exists = await searchSameId(data.id)
+
       if (exists) {
         setError('id', {
           type: 'manual',
           message: 'このIDは既に使用されています'
         })
+
         return
       }
     }
@@ -66,7 +68,6 @@ export default function Initialization({ userInfo }: ProfileProps) {
       const err = error as Error
       console.error('Profile Update Error:', err.message)
     }
-    
   }
 
   return(

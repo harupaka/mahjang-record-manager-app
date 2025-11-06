@@ -17,7 +17,7 @@ export default function MyPage({ userInfo }: ProfileProps) {
   }
 
   return(
-    <>
+    <div>
       <header className="flex justify-between items-center">
         <div className="text-4xl font-bold">
           マイページ
@@ -47,6 +47,6 @@ export default function MyPage({ userInfo }: ProfileProps) {
           直近の対戦
         </div>
       </div>
-    </>
+    </div>
   )
 }
