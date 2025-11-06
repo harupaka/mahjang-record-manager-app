@@ -1,15 +1,29 @@
 import * as z from "zod"
 import { User } from '@supabase/supabase-js'
 
-export interface SignUpParams {
-  email: string
-  password: string
-}
+export const SignUpForm = z.object({
+  email: z
+    .string()
+    .min(1, "入力してください")
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "有効なメールアドレスを入力して下さい"),
+  password: z
+    .string()
+    .min(8, "8字以上で入力してください")
+    .max(20, "20字以内で入力してください")
+    .regex(/^[A-Za-z0-9]+$/, "英数字のみ使用可能です")
+})
 
-export interface SignInParams {
-  email: string
-  password: string
-}
+export const SignInForm = z.object({
+  email: z
+    .string()
+    .min(1, "入力してください")
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "有効なメールアドレスを入力して下さい"),
+  password: z
+    .string()
+    .min(8, "8字以上で入力してください")
+    .max(20, "20字以内で入力してください")
+    .regex(/^[A-Za-z0-9]+$/, "英数字のみ使用可能です")
+})
 
 export const InitializingForm = z.object({
   name: z.string()

@@ -16,33 +16,41 @@ import { useRouter } from "next/navigation"
 import { ChevronLeftIcon } from "lucide-react"
 import { signInUser } from "@/lib/api/client/auth"
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { SignInForm } from "@/lib/types"
+import z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+type FormData = z.infer<typeof SignInForm>
 
 export default function SignIn() {
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: zodResolver(SignInForm)
+  })
+
   const [signInError, setSignInError] = useState<boolean>(false)
 
   const router = useRouter()
 
-  const handleSignIn = async () => {
+  const onSubmit = async (data: FormData) => {
     try{
-      const data = await signInUser({email, password})
+      await signInUser(data)
 
       router.push('/mypage')
-
-      return data
     } catch(error){
-      setEmail('')
-      setPassword('')
       setSignInError(true)
+
       const err = error as Error
-      console.error('Sign In error:', err.message)
-      return null
+      console.error('SignIn Error:', err.message)
     }
   }
 
   return(
-    <div>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Button variant="secondary" size="icon" className="absolute top-4 left-4 size-8" asChild>
         <Link href='/'>
           <ChevronLeftIcon />
@@ -56,19 +64,23 @@ export default function SignIn() {
       <CardContent>
         <div>
           <Label className="mt-4 mb-2" >メールアドレス</Label>
-          <Input onChange={(e) => {setEmail(e.target.value)}}/>
+          <Input {...register('email')}/>
+          <CardDescription className="mb-2">
+            {errors.email && <div className='text-red-500'>{errors.email.message}</div>}
+          </CardDescription>
         </div>
         <div>
           <Label className="mt-4 mb-2">パスワード</Label>
-          <Input type="password" onChange={(e) => {setPassword(e.target.value)}}/>
+          <Input type="password" {...register('password')}/>
         </div>
         <CardDescription className={cn(signInError ? 'text-red-500':'hidden')}>
           メールアドレスかパスワードが間違っています。
         </CardDescription>
       </CardContent>
       <CardFooter>
-        <Button className="w-full mt-6 mb-2" onClick={handleSignIn}>ログイン</Button>
+        <Button type="submit" className="w-full mt-6 mb-2">ログイン</Button>
       </CardFooter>
-    </div>
+    </form>
   )
+
 }
