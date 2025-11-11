@@ -1,8 +1,8 @@
-import { SignInForm, SignUpForm } from "@/lib/types"
+import { FormSchema } from "@/lib/types"
 import { supabase } from "@/lib/supabase/client"
 import z from "zod"
-type SignUpType = z.infer<typeof SignUpForm>
-type SignInType = z.infer<typeof SignInForm>
+type SignUpType = z.infer<typeof FormSchema>
+type SignInType = z.infer<typeof FormSchema>
 
 export const signUpUser = async ({email, password}: SignUpType) => {
   const {data, error} = await supabase.auth.signUp({email, password})

@@ -17,11 +17,11 @@ import { ChevronLeftIcon } from "lucide-react"
 import { signInUser } from "@/lib/api/client/auth"
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
-import { SignInForm } from "@/lib/types"
+import { FormSchema } from "@/lib/types"
 import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-type FormData = z.infer<typeof SignInForm>
+type FormData = z.infer<typeof FormSchema>
 
 export default function SignIn() {
   const {
@@ -29,7 +29,7 @@ export default function SignIn() {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: zodResolver(SignInForm)
+    resolver: zodResolver(FormSchema)
   })
 
   const [signInError, setSignInError] = useState<boolean>(false)
