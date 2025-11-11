@@ -12,7 +12,7 @@ export const getProfile = async() => {
     const profile = await fetchProfile(user);
 
     return {
-            user, 
+            user,
             profile
           }
   } catch (error) {
