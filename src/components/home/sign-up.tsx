@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeftIcon } from "lucide-react"
+import { ChevronLeftIcon, Loader2 } from "lucide-react"
 import { signUpUser } from "@/lib/api/client/auth"
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
@@ -32,7 +33,11 @@ export default function SignUp() {
 
   const router = useRouter()
 
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const onSubmit = async (data: FormData) => {
+    setIsLoading(true)
+
     try{
       await signUpUser(data)
 
@@ -40,6 +45,8 @@ export default function SignUp() {
     } catch(error){
       const err = error as Error
       console.error('SignUp Error:', err.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -73,7 +80,10 @@ export default function SignUp() {
         </div>
       </CardContent>
       <CardFooter>
-        <Button type="submit" className="w-full mt-6 mb-2">新規登録</Button>
+        <Button type="submit" className="w-full mt-6 mb-2">
+          新規登録
+          {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+        </Button>
       </CardFooter>
     </form>
   )

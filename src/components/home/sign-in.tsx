@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
-import { ChevronLeftIcon } from "lucide-react"
+import { ChevronLeftIcon, Loader2 } from "lucide-react"
 import { signInUser } from "@/lib/api/client/auth"
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
@@ -33,10 +33,13 @@ export default function SignIn() {
   })
 
   const [signInError, setSignInError] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const router = useRouter()
 
   const onSubmit = async (data: FormData) => {
+    setIsLoading(true)
+
     try{
       await signInUser(data)
 
@@ -46,6 +49,8 @@ export default function SignIn() {
 
       const err = error as Error
       console.error('SignIn Error:', err.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -78,7 +83,10 @@ export default function SignIn() {
         </CardDescription>
       </CardContent>
       <CardFooter>
-        <Button type="submit" className="w-full mt-6 mb-2">ログイン</Button>
+        <Button type="submit" className="w-full mt-6 mb-2">
+          ログイン
+          {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+        </Button>
       </CardFooter>
     </form>
   )

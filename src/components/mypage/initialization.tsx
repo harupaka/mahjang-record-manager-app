@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { User } from '@supabase/supabase-js'
 import { searchSameId, registerProfile } from "@/lib/api/client/profile"
@@ -33,8 +34,10 @@ export default function Initialization({ userInfo }: ProfileProps) {
   } = useForm<FormData>({
     resolver: zodResolver(InitializingForm)
   })
+
   const [clientUser, setClientUser] = useState<User | null>(null)
   const [originalId, setOriginalId] = useState<string>("")
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const router = useRouter()
 
@@ -48,6 +51,8 @@ export default function Initialization({ userInfo }: ProfileProps) {
   }, [reset, userInfo.profile, userInfo.user])
 
   const onSubmit = async (data: FormData) => {
+    setIsLoading(true)
+
     if (data.id !== originalId) {
       const exists = await searchSameId(data.id)
 
@@ -56,6 +61,8 @@ export default function Initialization({ userInfo }: ProfileProps) {
           type: 'manual',
           message: 'このIDは既に使用されています'
         })
+
+        setIsLoading(false)
 
         return
       }
@@ -67,6 +74,8 @@ export default function Initialization({ userInfo }: ProfileProps) {
     } catch(error){
       const err = error as Error
       console.error('Profile Update Error:', err.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -101,7 +110,10 @@ export default function Initialization({ userInfo }: ProfileProps) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full mt-6 mb-2">登録</Button>
+          <Button type="submit" className="w-full mt-6 mb-2">
+            登録
+            {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+          </Button>
         </CardFooter>
       </Card>
     </form>
