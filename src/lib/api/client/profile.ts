@@ -7,8 +7,9 @@ export const fetchProfile = async (user: User) => {
     .select('*')
     .eq('fixed-id', user.id)
     .single()
-  
+
   if (error) throw error
+
   return data
 }
 
