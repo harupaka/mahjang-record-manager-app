@@ -1,50 +1,71 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
-import { cn } from "@/lib/utils"
-import { useRouter } from "next/navigation"
-import { ChevronLeftIcon } from "lucide-react"
-import { signInUser } from "@/lib/api/client/auth"
-import Link from 'next/link'
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { ChevronLeftIcon, Loader2 } from "lucide-react";
+import { signInUser } from "@/lib/api/client/auth";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { FormSchema } from "@/lib/types";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type FormData = z.infer<typeof FormSchema>;
 
 export default function SignIn() {
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [signInError, setSignInError] = useState<boolean>(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(FormSchema),
+  });
 
-  const router = useRouter()
+  const [signInError, setSignInError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleSignIn = async () => {
-    try{
-      const data = await signInUser({email, password})
+  const router = useRouter();
 
-      router.push('/mypage')
+  const onSubmit = async (data: FormData) => {
+    setIsLoading(true);
 
-      return data
-    } catch(error){
-      setEmail('')
-      setPassword('')
-      setSignInError(true)
-      const err = error as Error
-      console.error('Sign In error:', err.message)
-      return null
+    try {
+      await signInUser(data);
+
+      router.push("/mypage");
+    } catch (error) {
+      setSignInError(true);
+      setIsLoading(false);
+
+      const err = error as Error;
+      console.error("SignIn Error:", err.message);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     }
-  }
+  };
 
-  return(
-    <div>
-      <Button variant="secondary" size="icon" className="absolute top-4 left-4 size-8" asChild>
-        <Link href='/'>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Button
+        variant="secondary"
+        size="icon"
+        className="absolute top-4 left-4 size-8"
+        asChild
+      >
+        <Link href="/">
           <ChevronLeftIcon />
         </Link>
       </Button>
@@ -55,20 +76,30 @@ export default function SignIn() {
       </CardHeader>
       <CardContent>
         <div>
-          <Label className="mt-4 mb-2" >メールアドレス</Label>
-          <Input onChange={(e) => {setEmail(e.target.value)}}/>
+          <Label className="mt-4 mb-2">メールアドレス</Label>
+          <Input {...register("email")} />
+          <CardDescription className="mb-2">
+            {errors.email && (
+              <div className="text-red-500">{errors.email.message}</div>
+            )}
+          </CardDescription>
         </div>
         <div>
           <Label className="mt-4 mb-2">パスワード</Label>
-          <Input type="password" onChange={(e) => {setPassword(e.target.value)}}/>
+          <Input type="password" {...register("password")} />
         </div>
-        <CardDescription className={cn(signInError ? 'text-red-500':'hidden')}>
+        <CardDescription
+          className={cn(signInError ? "text-red-500" : "hidden")}
+        >
           メールアドレスかパスワードが間違っています。
         </CardDescription>
       </CardContent>
       <CardFooter>
-        <Button className="w-full mt-6 mb-2" onClick={handleSignIn}>ログイン</Button>
+        <Button type="submit" className="w-full mt-6 mb-2" disabled={isLoading}>
+          ログイン
+          {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+        </Button>
       </CardFooter>
-    </div>
-  )
+    </form>
+  );
 }
